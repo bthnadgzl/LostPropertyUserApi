@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -18,10 +19,10 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final TokenManager tokenManager;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = tokenManager.resolveToken(request);
-
         try {
             if(token != null && tokenManager.tokenValidate(token)){
                 Authentication aut = tokenManager.getAuthentication(token);
@@ -35,5 +36,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
         filterChain.doFilter(request,response);
+    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request){
+        return (new AntPathMatcher().match("/user/register",request.getServletPath()) ||
+                (new AntPathMatcher().match("/user/login",request.getServletPath())) ||
+                (new AntPathMatcher().match("/h2-console/**",request.getServletPath())));
+
     }
 }
