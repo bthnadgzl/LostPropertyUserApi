@@ -1,9 +1,11 @@
 package com.kayipesyaUser.util;
 
 import com.kayipesyaUser.constant.AvailableUniversities;
-import com.kayipesyaUser.model.Dto.Request.UserRequest;
+import com.kayipesyaUser.model.Dto.Request.LoginRequest;
+import com.kayipesyaUser.model.Dto.Request.RegisterRequest;
 import com.kayipesyaUser.model.User;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.modelmapper.ModelMapper;
 
@@ -11,11 +13,13 @@ import org.modelmapper.ModelMapper;
 @AllArgsConstructor
 public class Mapper {
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public User userRequestToUserEntity(UserRequest userRequest){
+    public User registerRequestToUserEntity(RegisterRequest registerRequest){
         String universityMailCode = AvailableUniversities.ITU.getUniversityMailCode();
-        User user = modelMapper.map(userRequest,User.class);
-        user.setUsername(userRequest.getEmail().replaceAll(universityMailCode,""));
+        User user = modelMapper.map(registerRequest,User.class);
+        user.setUsername(registerRequest.getEmail().replaceAll(universityMailCode,""));
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         return user;
     }
     public <A,B> A mapSourceToTarget(B source,Class<A> targetClass){

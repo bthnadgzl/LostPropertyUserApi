@@ -1,11 +1,15 @@
 package com.kayipesyaUser.model.Dto.Request;
 
+import com.kayipesyaUser.constant.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@AllArgsConstructor
+import java.util.List;
+
 @Data
-public class LoginRequest {
+@AllArgsConstructor
+public class RegisterRequest {
     private String email;
     private String password;
+    private List<UserRole> userRoleList;
 }

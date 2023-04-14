@@ -1,17 +1,16 @@
 package com.kayipesyaUser.service;
 
 import com.kayipesyaUser.model.Dto.Request.LoginRequest;
-import com.kayipesyaUser.model.Dto.Request.UserRequest;
-import com.kayipesyaUser.model.Dto.Response.LoginResponse;
+import com.kayipesyaUser.model.Dto.Request.RegisterRequest;
 import com.kayipesyaUser.model.Dto.Response.UserResponse;
-import com.kayipesyaUser.model.User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
-import java.util.UUID;
-
 public interface UserService {
-    ResponseEntity<UserResponse> create(UserRequest userRequest);
-    ResponseEntity<UserResponse> update(UserRequest userRequest);
-    ResponseEntity<UserResponse> delete(UUID userUuid);
-    ResponseEntity<LoginResponse> login(LoginRequest loginRequest);
+    ResponseEntity<String> login(LoginRequest loginRequest);
+    ResponseEntity<String> register(RegisterRequest registerRequest);
+    ResponseEntity<String> delete(String email);
+    ResponseEntity<UserResponse> search(String email);
+    ResponseEntity<UserResponse> whoIsUser(HttpServletRequest request);
+
 }
