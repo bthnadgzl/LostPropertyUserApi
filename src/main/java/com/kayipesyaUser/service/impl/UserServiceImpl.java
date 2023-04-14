@@ -1,5 +1,6 @@
 package com.kayipesyaUser.service.impl;
 
+import com.kayipesyaUser.exception.CustomException;
 import com.kayipesyaUser.model.Dto.Request.LoginRequest;
 import com.kayipesyaUser.model.Dto.Request.RegisterRequest;
 import com.kayipesyaUser.model.Dto.Response.UserResponse;
@@ -11,10 +12,12 @@ import com.kayipesyaUser.util.Mapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import static com.kayipesyaUser.util.UniversityMailValidation.universityMailValidation;
 
 @Service
 @AllArgsConstructor
@@ -25,21 +28,24 @@ public class UserServiceImpl implements UserService {
     private AuthenticationManager authenticationManagerBean;
     private TokenManager tokenManager;
     private Mapper mapper;
+
     @Override
     public ResponseEntity<String> login(LoginRequest loginRequest) {
-        //try {
+        try {
             authenticationManagerBean.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
             String token = tokenManager.generateToken(loginRequest.getEmail(), userRepository.findByEmail(loginRequest.getEmail()).get().getUserRoleList());
             return ResponseEntity.ok(token);
-        //}
-        //catch (AuthenticationException e){
-        //    System.out.println(e.getMessage());
-        //}
+        }
+        catch (Exception e){
+           throw new CustomException(HttpStatus.BAD_REQUEST,"Invalid username or password.");
+        }
 
     }
 
     @Override
     public ResponseEntity<String> register(RegisterRequest registerRequest) {
+
+        universityMailValidation(registerRequest.getEmail()); // Checks if the university email or not.
         if(!userRepository.existsByEmail(registerRequest.getEmail())){
             User user = mapper.registerRequestToUserEntity(registerRequest);
             userRepository.save(user);
@@ -47,7 +53,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(token);
         }
         else{
-            return ResponseEntity.badRequest().build();
+            throw new CustomException(HttpStatus.BAD_REQUEST,"Email already in use or forbidden email(Register with your ITU mail).");
         }
     }
 

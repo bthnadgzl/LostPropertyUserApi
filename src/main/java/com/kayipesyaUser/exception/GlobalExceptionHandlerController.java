@@ -8,6 +8,8 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
 
@@ -18,14 +20,17 @@ import java.util.Map;
 public class GlobalExceptionHandlerController{
 
     @ExceptionHandler(CustomException.class)
+    @ResponseBody
     public void handleCustomException(HttpServletResponse request,CustomException e) throws IOException {
         request.sendError(e.getHttpStatus().value(),e.getMessage());
     }
     @ExceptionHandler(Exception.class)
+    @ResponseBody
     public void handleException(HttpServletResponse request) throws IOException {
         request.sendError(HttpStatus.BAD_REQUEST.value(),"Something went wrong.");
     }
     @ExceptionHandler(AccessDeniedException.class)
+    @ResponseBody
     public void handleAccessDeniedException(HttpServletResponse request) throws IOException {
         request.sendError(HttpStatus.FORBIDDEN.value(),"Access forbidden.");
     }

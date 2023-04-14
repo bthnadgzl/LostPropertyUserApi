@@ -1,10 +1,12 @@
 package com.kayipesyaUser.security;
 
+import com.kayipesyaUser.exception.CustomException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,10 +31,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(aut);
             }
         }
-        catch (Exception e){
-            //TODO::Buraya custom exception gelecek
+        catch (CustomException e){
             SecurityContextHolder.clearContext();
-            response.sendError(404,e.getMessage());
+            response.sendError(e.getHttpStatus().value(),e.getMessage());
             return;
         }
         filterChain.doFilter(request,response);

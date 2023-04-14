@@ -3,6 +3,7 @@ package com.kayipesyaUser.constant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 
 @AllArgsConstructor
@@ -13,4 +14,8 @@ public enum AvailableUniversities {
     private String universityMailCode;
 
 
+    @Override
+    public String toString() {
+        return this.universityMailCode;
+    }
 }
