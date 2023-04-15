@@ -29,9 +29,9 @@ public class TokenManager {
     private static final String secretKey = "LostProperty";
     private static final int validate = 60 * 60 * 1000;
     private UserDetailsService userDetailsService;
-    public String generateToken(String email, List<UserRole> userRoles) {
+    public String generateToken(String email, UserRole userRole) {
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("auth",userRoles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
+        claims.put("auth",new SimpleGrantedAuthority(userRole.getAuthority()));
         Date now = new Date();
         Date validity = new Date(now.getTime() + validate);
         return Jwts.builder()

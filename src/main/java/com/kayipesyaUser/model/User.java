@@ -35,8 +35,7 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate = new Date();
     private LocalDateTime lastLoginDate;
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<UserRole> userRoleList;
+    private UserRole userRole;
 
 
 

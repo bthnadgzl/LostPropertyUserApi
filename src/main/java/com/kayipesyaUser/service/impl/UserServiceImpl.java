@@ -1,5 +1,6 @@
 package com.kayipesyaUser.service.impl;
 
+import com.kayipesyaUser.constant.UserRole;
 import com.kayipesyaUser.exception.CustomException;
 import com.kayipesyaUser.model.Dto.Request.LoginRequest;
 import com.kayipesyaUser.model.Dto.Request.RegisterRequest;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> login(LoginRequest loginRequest) {
         try {
             authenticationManagerBean.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-            String token = tokenManager.generateToken(loginRequest.getEmail(), userRepository.findByEmail(loginRequest.getEmail()).get().getUserRoleList());
+            String token = tokenManager.generateToken(loginRequest.getEmail(), userRepository.findByEmail(loginRequest.getEmail()).get().getUserRole());
             return ResponseEntity.ok(token);
         }
         catch (Exception e){
@@ -48,8 +49,9 @@ public class UserServiceImpl implements UserService {
         universityMailValidation(registerRequest.getEmail()); // Checks if the university email or not.
         if(!userRepository.existsByEmail(registerRequest.getEmail())){
             User user = mapper.registerRequestToUserEntity(registerRequest);
+            user.setUserRole(UserRole.ROLE_CLIENT);
             userRepository.save(user);
-            String token = tokenManager.generateToken(user.getEmail(),user.getUserRoleList());
+            String token = tokenManager.generateToken(user.getEmail(),user.getUserRole());
             return ResponseEntity.ok(token);
         }
         else{

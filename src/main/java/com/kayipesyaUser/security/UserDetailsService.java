@@ -18,7 +18,7 @@ public class UserDetailsService implements org.springframework.security.core.use
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getUsername())
                     .password(user.getPassword())
-                    .authorities(user.getUserRoleList())
+                    .authorities(user.getUserRole())
                     .accountExpired(false)
                     .accountLocked(false)
                     .credentialsExpired(false)
