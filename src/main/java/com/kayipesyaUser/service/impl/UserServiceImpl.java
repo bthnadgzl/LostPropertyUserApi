@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(token);
         }
         else{
-            throw new CustomException(HttpStatus.BAD_REQUEST,"Email already in use or forbidden email(Register with your ITU mail).");
+            throw new CustomException(HttpStatus.BAD_REQUEST,"EMAIL ALREADY IN USE! (Register with your university mail).");
         }
     }
 

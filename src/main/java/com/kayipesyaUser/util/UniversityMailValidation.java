@@ -16,7 +16,7 @@ public class UniversityMailValidation {
             if(registerRequestEmail.contains(emailCode))
                 break;
             else
-                throw new CustomException(HttpStatus.BAD_REQUEST,"Email forbidden.(Use Your University Mail.");
+                throw new CustomException(HttpStatus.BAD_REQUEST,"EMAIL FORBIDDEN.(Use Your University Mail.)");
         }
     }
 }

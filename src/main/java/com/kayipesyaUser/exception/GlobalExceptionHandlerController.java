@@ -1,37 +1,28 @@
 package com.kayipesyaUser.exception;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
-import org.springframework.boot.web.reactive.error.ErrorAttributes;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
+
 
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.util.Map;
-
+@ControllerAdvice
 public class GlobalExceptionHandlerController{
 
     @ExceptionHandler(CustomException.class)
-    @ResponseBody
-    public void handleCustomException(HttpServletResponse request,CustomException e) throws IOException {
-        request.sendError(e.getHttpStatus().value(),e.getMessage());
+    public void handleCustomException(HttpServletResponse response,CustomException e) throws IOException {
+        response.sendError(e.getHttpStatus().value(),e.getMessage());
     }
     @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public void handleException(HttpServletResponse request) throws IOException {
-        request.sendError(HttpStatus.BAD_REQUEST.value(),"Something went wrong.");
+    public void handleException(HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value(),"Something went wrong.");
     }
     @ExceptionHandler(AccessDeniedException.class)
-    @ResponseBody
-    public void handleAccessDeniedException(HttpServletResponse request) throws IOException {
-        request.sendError(HttpStatus.FORBIDDEN.value(),"Access forbidden.");
+    public void handleAccessDeniedException(HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.FORBIDDEN.value(),"Access denied.");
     }
 }

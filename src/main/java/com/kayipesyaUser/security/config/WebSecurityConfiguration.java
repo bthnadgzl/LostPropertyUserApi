@@ -35,6 +35,7 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests().requestMatchers(new AntPathRequestMatcher("/user/register")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/user/login")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
                 .anyRequest().authenticated();
 
         http.exceptionHandling().accessDeniedPage("/login");
