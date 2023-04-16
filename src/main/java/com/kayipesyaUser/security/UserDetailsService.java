@@ -22,7 +22,7 @@ public class UserDetailsService implements org.springframework.security.core.use
                     .accountExpired(false)
                     .accountLocked(false)
                     .credentialsExpired(false)
-                    .disabled(false)
+                    .disabled(!user.isEnabled())
                     .build();
 
 

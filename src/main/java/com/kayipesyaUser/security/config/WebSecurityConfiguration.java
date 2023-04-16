@@ -36,6 +36,7 @@ public class WebSecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/user/login")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/user/verify/**")).permitAll()
                 .anyRequest().authenticated();
 
         http.exceptionHandling().accessDeniedPage("/login");
@@ -47,7 +48,8 @@ public class WebSecurityConfiguration {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         return (web) -> web.ignoring().requestMatchers("/public")
-                .and().ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
+                .and().ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                .and().ignoring().requestMatchers(new AntPathRequestMatcher(("/user/verify/**")));
     }
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){

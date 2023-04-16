@@ -2,16 +2,11 @@ package com.kayipesyaUser.model;
 
 import com.kayipesyaUser.constant.UserRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -31,12 +26,14 @@ public class User {
     private String username;
     @Column(updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate = new Date();
+    private Timestamp createdDate;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedDate = new Date();
+    private Timestamp updatedDate;
     private LocalDateTime lastLoginDate;
+    @Column(name = "verification_code", length = 64)
+    private String verificationCode;
+    private boolean enabled;
     private UserRole userRole;
-
 
 
 }
