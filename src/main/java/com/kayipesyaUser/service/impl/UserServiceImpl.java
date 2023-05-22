@@ -4,6 +4,7 @@ import com.kayipesyaUser.constant.UserRole;
 import com.kayipesyaUser.exception.CustomException;
 import com.kayipesyaUser.model.Dto.Request.LoginRequest;
 import com.kayipesyaUser.model.Dto.Request.RegisterRequest;
+import com.kayipesyaUser.model.Dto.Response.LoginResponse;
 import com.kayipesyaUser.model.Dto.Response.UserResponse;
 import com.kayipesyaUser.model.User;
 import com.kayipesyaUser.repository.UserRepository;
@@ -39,14 +40,15 @@ public class UserServiceImpl implements UserService {
     private EmailService emailService;
 
     @Override
-    public ResponseEntity<String> login(LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
         try {
             authenticationManagerBean.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
             User user = userRepository.findByEmail(loginRequest.getEmail()).get();
             String token = tokenManager.generateToken(loginRequest.getEmail(), user.getUserRole());
             user.setLastLoginDate(LocalDateTime.now());
+            LoginResponse loginResponse = new LoginResponse(user.getUsername(),token);
             userRepository.save(user);
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(loginResponse);
         }
         catch (DisabledException e){
             throw new CustomException(HttpStatus.NOT_ACCEPTABLE,"Email Doğrulamasını Yapın.");

@@ -3,6 +3,7 @@ package com.kayipesyaUser.controller;
 import com.kayipesyaUser.exception.CustomException;
 import com.kayipesyaUser.model.Dto.Request.LoginRequest;
 import com.kayipesyaUser.model.Dto.Request.RegisterRequest;
+import com.kayipesyaUser.model.Dto.Response.LoginResponse;
 import com.kayipesyaUser.model.Dto.Response.UserResponse;
 import com.kayipesyaUser.security.TokenManager;
 import com.kayipesyaUser.service.UserService;
@@ -28,7 +29,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
        return userService.login(loginRequest);
     }
     @PostMapping("/register")
