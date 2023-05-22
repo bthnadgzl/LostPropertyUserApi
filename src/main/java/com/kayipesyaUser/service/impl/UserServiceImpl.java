@@ -11,22 +11,18 @@ import com.kayipesyaUser.security.TokenManager;
 import com.kayipesyaUser.service.EmailService;
 import com.kayipesyaUser.service.UserService;
 import com.kayipesyaUser.util.Mapper;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.kayipesyaUser.util.UniversityMailValidation.universityMailValidation;
@@ -46,14 +42,17 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> login(LoginRequest loginRequest) {
         try {
             authenticationManagerBean.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-            String token = tokenManager.generateToken(loginRequest.getEmail(), userRepository.findByEmail(loginRequest.getEmail()).get().getUserRole());
+            User user = userRepository.findByEmail(loginRequest.getEmail()).get();
+            String token = tokenManager.generateToken(loginRequest.getEmail(), user.getUserRole());
+            user.setLastLoginDate(LocalDateTime.now());
+            userRepository.save(user);
             return ResponseEntity.ok(token);
         }
         catch (DisabledException e){
-            throw new CustomException(HttpStatus.NOT_ACCEPTABLE,"Confirm your email.");
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE,"Email Doğrulamasını Yapın.");
         }
         catch (Exception e){
-           throw new CustomException(HttpStatus.BAD_REQUEST,"Invalid username or password.");
+           throw new CustomException(HttpStatus.BAD_REQUEST,"Kullanıcı Adı Veya Parola Yanlış.");
         }
 
 
@@ -71,7 +70,7 @@ public class UserServiceImpl implements UserService {
             user.setVerificationCode(randomCode);
             userRepository.save(user);
             emailService.sendVerificationMail(user,siteUrl);
-            return ResponseEntity.ok("Email confirm needed.");
+            return ResponseEntity.ok("Email Doğrulaması Gerekli.");
         }
         else{
             User user = userRepository.findByEmail(registerRequest.getEmail()).get();
@@ -80,9 +79,9 @@ public class UserServiceImpl implements UserService {
                 user.setVerificationCode(randomCode);
                 userRepository.save(user);
                 emailService.sendVerificationMail(user,siteUrl);
-                return ResponseEntity.ok("Verification email resended.");
+                return ResponseEntity.ok("Doğrulama Kodu Tekrar Gönderildi!");
             }
-            throw new CustomException(HttpStatus.BAD_REQUEST,"EMAIL ALREADY IN USE! (Register with your university mail).");
+            throw new CustomException(HttpStatus.BAD_REQUEST,"Email Kullanılıyor!");
         }
     }
 

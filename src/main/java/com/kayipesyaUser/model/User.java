@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -18,7 +19,7 @@ public class User {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", updatable = false, nullable = false,columnDefinition = "BINARY(16)")
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
     @Column(unique = true)
     private String email;
@@ -26,9 +27,9 @@ public class User {
     private String username;
     @Column(updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp createdDate;
+    private Date createdDate = new Date();
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp updatedDate;
+    private Date updatedDate = new Date();
     private LocalDateTime lastLoginDate;
     @Column(name = "verification_code", length = 64)
     private String verificationCode;
